@@ -19,17 +19,21 @@ class App extends Component {
     this.state = {
       searchTerm: "",
       hintText: "",
+      gif: null,
     };
   }
 
   searchGiphy = async (searchTerm) => {
     try {
       const response = await fetch(
-        "https://api.giphy.com/v1/gifs/search?api_key=NSb3YBh9dVt0KzevbSHGwkkiWtb8W9ae&q=dog&limit=25&offset=0&rating=R&lang=en"
+        `https://api.giphy.com/v1/gifs/search?api_key=NSb3YBh9dVt0KzevbSHGwkkiWtb8W9ae&q=${searchTerm}&limit=25&offset=0&rating=R&lang=en`
       );
-      const data = await response.json();
+      const { data } = await response.json();
 
-      console.log(data);
+      this.setState((prevState, props) => ({
+        ...prevState,
+        gif: data[0],
+      }));
     } catch (error) {}
   };
 
@@ -51,11 +55,20 @@ class App extends Component {
   };
 
   render() {
-    const { searchTerm } = this.state;
+    const { searchTerm, gif } = this.state;
     return (
       <div className="page">
         <Header />
         <div className="search grid">
+          {gif && (
+            <video
+              className="grid-item video"
+              autoPlay
+              loop
+              src={gif.images.original.mp4}
+            />
+          )}
+
           <input
             className="input grid-item"
             placeholder="Type something"
