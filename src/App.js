@@ -1,8 +1,15 @@
 import React, { Component } from "react";
+import loader from "./images/loader.svg";
 
 const Header = () => (
   <div className="header grid">
     <h1 className="title">Jiffy</h1>
+  </div>
+);
+
+const UserHint = ({ loading, hintText }) => (
+  <div className="user-hint">
+    {loading ? <img className="block mx-auto" src={loader} /> : hintText}
   </div>
 );
 
@@ -11,6 +18,7 @@ class App extends Component {
     super(props);
     this.state = {
       searchTerm: "",
+      hintText: "",
     };
   }
 
@@ -19,9 +27,8 @@ class App extends Component {
     this.setState((prevState, props) => ({
       ...prevState,
       searchTerm: value,
+      hintText: value.length > 2 ? `Hit enter to search ${value}` : "",
     }));
-    if (value.length > 2) {
-    }
   };
 
   handleKeyPress = (event) => {
@@ -46,6 +53,7 @@ class App extends Component {
             value={searchTerm}
           />
         </div>
+        <UserHint {...this.state} />
       </div>
     );
   }
