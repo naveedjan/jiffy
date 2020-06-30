@@ -1,9 +1,22 @@
 import React, { Component } from "react";
 import loader from "./images/loader.svg";
+import clearButton from "./images/close-icon.svg";
+import Gif from "./Gif";
 
-const Header = () => (
+const randomChoice = (arr) => {
+  const randIndex = Math.floor(Math.random() * arr.length);
+  return arr[randIndex];
+};
+
+const Header = ({ clearSearch, hasResults }) => (
   <div className="header grid">
-    <h1 className="title">Jiffy</h1>
+    {hasResults ? (
+      <button onClick={clearSearch}>
+        <img src={clearButton} />
+      </button>
+    ) : (
+      <h1 className="title">Jiffy</h1>
+    )}
   </div>
 );
 
@@ -20,21 +33,43 @@ class App extends Component {
       searchTerm: "",
       hintText: "",
       gif: null,
+      gifs: [],
     };
   }
 
   searchGiphy = async (searchTerm) => {
+    this.setState({
+      loading: true,
+    });
     try {
       const response = await fetch(
         `https://api.giphy.com/v1/gifs/search?api_key=NSb3YBh9dVt0KzevbSHGwkkiWtb8W9ae&q=${searchTerm}&limit=25&offset=0&rating=R&lang=en`
       );
       const { data } = await response.json();
 
+      if (!data.length) {
+        throw `Nothing found for ${searchTerm}`;
+      }
+
+      const randomGif = randomChoice(data);
+
+      console.log(randomGif);
+      console.log(data);
+
       this.setState((prevState, props) => ({
         ...prevState,
-        gif: data[0],
+        gif: randomGif,
+        gifs: [...prevState.gifs, randomGif],
+        loading: false,
+        hintText: `Hit enter to see more ${searchTerm}`,
       }));
-    } catch (error) {}
+    } catch (error) {
+      this.setState((prevState, props) => ({
+        ...prevState,
+        hintText: error,
+        loading: false,
+      }));
+    }
   };
 
   handleChange = (event) => {
@@ -54,20 +89,25 @@ class App extends Component {
     }
   };
 
+  clearSearch = () => {
+    this.setState((prevState, props) => ({
+      ...prevState,
+      searchTerm: "",
+      hintText: "",
+      gifs: [],
+    }));
+  };
+
   render() {
-    const { searchTerm, gif } = this.state;
+    const { searchTerm, gifs } = this.state;
+    const hasResults = gifs.length;
     return (
       <div className="page">
-        <Header />
+        <Header clearSearch={this.clearSearch} hasResults={hasResults} />
         <div className="search grid">
-          {gif && (
-            <video
-              className="grid-item video"
-              autoPlay
-              loop
-              src={gif.images.original.mp4}
-            />
-          )}
+          {this.state.gifs.map((gif) => (
+            <Gif {...gif} />
+          ))}
 
           <input
             className="input grid-item"
