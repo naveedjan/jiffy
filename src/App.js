@@ -22,6 +22,17 @@ class App extends Component {
     };
   }
 
+  searchGiphy = async (searchTerm) => {
+    try {
+      const response = await fetch(
+        "https://api.giphy.com/v1/gifs/search?api_key=NSb3YBh9dVt0KzevbSHGwkkiWtb8W9ae&q=dog&limit=25&offset=0&rating=R&lang=en"
+      );
+      const data = await response.json();
+
+      console.log(data);
+    } catch (error) {}
+  };
+
   handleChange = (event) => {
     const { value } = event.target;
     this.setState((prevState, props) => ({
@@ -35,7 +46,7 @@ class App extends Component {
     // character limit search (2)
     const { value } = event.target;
     if (value.length > 2 && event.key === "Enter") {
-      alert(`search for ${value}`);
+      this.searchGiphy(value);
     }
   };
 
