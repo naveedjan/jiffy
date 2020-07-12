@@ -9,20 +9,20 @@ const randomChoice = (arr) => {
 };
 
 const Header = ({ clearSearch, hasResults }) => (
-  <div className="header grid">
+  <div className='header grid'>
     {hasResults ? (
       <button onClick={clearSearch}>
         <img src={clearButton} />
       </button>
     ) : (
-      <h1 className="title">Jiffy</h1>
+      <h1 className='title'>Jiffy</h1>
     )}
   </div>
 );
 
 const UserHint = ({ loading, hintText }) => (
-  <div className="user-hint">
-    {loading ? <img className="block mx-auto" src={loader} /> : hintText}
+  <div className='user-hint'>
+    {loading ? <img className='block mx-auto' src={loader} /> : hintText}
   </div>
 );
 
@@ -82,7 +82,6 @@ class App extends Component {
   };
 
   handleKeyPress = (event) => {
-    // character limit search (2)
     const { value } = event.target;
     if (value.length > 2 && event.key === "Enter") {
       this.searchGiphy(value);
@@ -102,16 +101,16 @@ class App extends Component {
     const { searchTerm, gifs } = this.state;
     const hasResults = gifs.length;
     return (
-      <div className="page">
+      <div className='page'>
         <Header clearSearch={this.clearSearch} hasResults={hasResults} />
-        <div className="search grid">
+        <div className='search grid'>
           {this.state.gifs.map((gif) => (
             <Gif {...gif} />
           ))}
 
           <input
-            className="input grid-item"
-            placeholder="Type something"
+            className='input grid-item'
+            placeholder='Type something'
             onChange={this.handleChange}
             onKeyPress={this.handleKeyPress}
             value={searchTerm}
